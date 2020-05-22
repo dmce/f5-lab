@@ -1,6 +1,6 @@
 ---
 - name: PLAYBOOK1
-  hosts: localhost
+  hosts: bigips
   connection: local
   gather_facts: false
 
@@ -14,7 +14,7 @@
   
   - name: AS3 Deploy
     uri:
-      url: https://35.179.47.140/mgmt/shared/appsvcs/declare
+      url: "https://{{inventory_hostname}}/mgmt/shared/appsvcs/declare/"
       user: "{{bigip_user}}"
       password: "{{bigip_pass}}" 
       method: "{{uri_method}}"
@@ -22,9 +22,14 @@
       force_basic_auth: true
       body_format: json
       validate_certs: false
-    register: as3_response
-    delay: 10
-    retries: 10
+      status_code:
+        - 200
+        - 204
+    register: as3_response    
+    delay: 30
+    retries: 5
+    until: ( 'status' in as3_response and (as3_response.status == 200 or as3_response.status == 204 ))
+    changed_when: false
 
   - name: AS3 Deploy Debug Output
     debug:
