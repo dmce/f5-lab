@@ -1,0 +1,30 @@
+---
+- name: PLAYBOOK1
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    uri_method: POST
+
+  vars_files:
+  - ../credentials/bigip.yaml
+
+  tasks:
+  
+  - name: AS3 Deploy
+    uri:
+      url: https://35.179.47.140/mgmt/shared/appsvcs/declare
+      user: "{{bigip_user}}"
+      password: "{{bigip_pass}}" 
+      method: "{{uri_method}}"
+      body: "{{ lookup('file','as3-declaration.json') }}"
+      force_basic_auth: true
+      body_format: json
+      validate_certs: false
+    register: as3_response
+
+  - name: AS3 Deploy Debug Output
+    debug:
+      msg: "{{as3_response}}"
+...
