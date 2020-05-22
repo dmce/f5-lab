@@ -26,5 +26,5 @@
 
   - name: AS3 Deploy Debug Output
     debug:
-      msg: "{{as3_response}}"
+      msg: "{{as3_response.json.declaration}}"
 ...
