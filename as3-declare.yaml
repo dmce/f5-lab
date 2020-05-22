@@ -23,6 +23,8 @@
       body_format: json
       validate_certs: false
     register: as3_response
+    delay: 10
+    retries: 10
 
   - name: AS3 Deploy Debug Output
     debug:
